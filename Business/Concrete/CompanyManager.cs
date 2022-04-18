@@ -23,13 +23,17 @@ namespace Business.Concrete
 
         public IResult Add(Company company)
         {
-            _companyDal.Add(company);
-            return new SuccessResult(Messages.Company.AddedCompany);
+            if (company.Name.Length < 10)
+            {
+                _companyDal.Add(company);
+                return new SuccessResult(Messages.Company.AddedCompany);
+            }
+            return new ErrorResult("Şirket adı 10 karakterden küçük olamaz.");
         }
 
         public IDataResult<List<Company>> GetAll()
         {
-            return new SuccessDataResult<List<Company>>(_companyDal.GetList());
+            return new SuccessDataResult<List<Company>>(_companyDal.GetList(), "Şirket Listeleme Başarılı");
         }
     }
 }
