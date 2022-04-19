@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Utilities.Hashing
+namespace Core.Utilities.Security.Hashing
 {
     public class HashingHelper
     {
