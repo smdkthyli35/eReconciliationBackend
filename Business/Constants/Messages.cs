@@ -12,5 +12,14 @@ namespace Business.Constants
         {
             public static string AddedCompany = "Şirket kayıt işlemi başarıyla gerçekleştirildi.";
         }
+
+        public static class User
+        {
+            public static string UserNotFound = "Kullanıcı bulunamadı.";
+            public static string PasswordError = "Hatalı şifre girişi!";
+            public static string SuccessfulLogin = "Başarıyla giriş yapıldı.";
+            public static string UserRegistered = "Kullanıcı başarıyla oluşturuldu.";
+            public static string UserAlreadyExists = "Bu kullanıcı zaten mevcut.";
+        }
     }
 }

@@ -15,7 +15,7 @@ namespace Core.Entities.Concrete
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public DateTime AddedAt { get; set; }
-        public byte IsActive { get; set; }
+        public bool IsActive { get; set; }
         public bool MailConfirm { get; set; }
         public string MailConfirmValue { get; set; }
         public DateTime MailConfirmDate { get; set; }
