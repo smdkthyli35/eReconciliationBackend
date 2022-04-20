@@ -1,4 +1,5 @@
 ﻿using Core.DataAccess.EntityFramework;
+using Core.Entities.Concrete;
 using DataAccess.Abstract;
 using DataAccess.Concrete.EntityFramework.Contexts;
 using Entities.Concrete;
@@ -15,5 +16,20 @@ namespace DataAccess.Concrete.EntityFramework
         public EfCompanyDal(BaseDbContext context) : base(context)
         {
         }
+
+        public void UserCompanyAdd(int userId, int companyId)
+        {
+            UserCompany userCompany = new()
+            {
+                UserId = userId,
+                CompanyId = companyId,
+                AddedAt = DateTime.Now,
+                IsActive = true,
+            };
+            BaseDbContext.UserCompanies.Add(userCompany);
+            BaseDbContext.SaveChanges();
+        }
+
+        private BaseDbContext BaseDbContext => _context as BaseDbContext;
     }
 }

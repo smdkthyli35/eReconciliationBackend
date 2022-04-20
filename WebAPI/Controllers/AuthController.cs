@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Entities.Concrete;
 using Entities.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,16 +22,37 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register(UserForRegisterDto userForRegisterDto)
+        public IActionResult Register(UserAndCompanyRegisterDto userAndCompanyRegisterDto)
+        {
+            var userExists = _authService.UserExists(userAndCompanyRegisterDto.UserForRegisterDto.Email);
+            if (!userExists.Success)
+                return BadRequest(userExists.Message);
+
+            var companyExists = _authService.CompanyExists(userAndCompanyRegisterDto.Company);
+            if (!companyExists.Success)
+                return BadRequest(companyExists.Message);
+
+            var registerResult = _authService.Register(userAndCompanyRegisterDto.UserForRegisterDto, userAndCompanyRegisterDto.UserForRegisterDto.Password, userAndCompanyRegisterDto.Company);
+
+            var result = _authService.CreateAccessToken(registerResult.Data, registerResult.Data.CompanyId);
+
+            if (result.Success)
+                return Ok(result.Data);
+
+            return BadRequest(registerResult.Message);
+        }
+
+        [HttpPost("registerSecondAccount")]
+        public IActionResult RegisterSecondAccount(UserForRegisterDto userForRegisterDto, int companyId)
         {
             var userExists = _authService.UserExists(userForRegisterDto.Email);
 
             if (!userExists.Success)
                 return BadRequest(userExists.Message);
 
-            var registerResult = _authService.Register(userForRegisterDto, userForRegisterDto.Password);
+            var registerResult = _authService.RegisterSecondAccount(userForRegisterDto, userForRegisterDto.Password);
 
-            var result = _authService.CreateAccessToken(registerResult.Data, 0);
+            var result = _authService.CreateAccessToken(registerResult.Data, companyId);
 
             if (result.Success)
                 return Ok(result.Data);
@@ -52,6 +74,6 @@ namespace WebAPI.Controllers
                 return Ok(result.Data);
 
             return BadRequest(result.Message);
-        } 
+        }
     }
 }

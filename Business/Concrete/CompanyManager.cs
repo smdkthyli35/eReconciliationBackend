@@ -31,9 +31,23 @@ namespace Business.Concrete
             return new ErrorResult("Şirket adı 10 karakterden küçük olamaz.");
         }
 
+        public IResult CompanyExists(Company company)
+        {
+            var result = _companyDal.Get(c => c.Name == company.Name && c.TaxDepartment == company.TaxDepartment && c.TaxIdNumber == company.TaxIdNumber && c.IdentityNumber == company.IdentityNumber);
+            if (result != null)
+                return new ErrorResult(Messages.Company.CompanyAlreadyExists);
+            return new SuccessResult();
+        }
+
         public IDataResult<List<Company>> GetAll()
         {
             return new SuccessDataResult<List<Company>>(_companyDal.GetList(), "Şirket Listeleme Başarılı");
+        }
+
+        public IResult UserCompanyAdd(int userId, int companyId)
+        {
+            _companyDal.UserCompanyAdd(userId, companyId);
+            return new SuccessResult();
         }
     }
 }
