@@ -27,5 +27,10 @@ namespace Business.Constants
         {
             public static string MailParameterUpdate = "Mail parametreleri başarıyla güncellendi.";
         }
+
+        public static class Mail
+        {
+            public static string MailSendSuccessful = "Mail gönderme işlemi başarılı.";
+        }
     }
 }

@@ -43,6 +43,9 @@ namespace Business.DependencyResolvers.Autofac
             builder.RegisterType<MailParameterManager>().As<IMailParameterService>().SingleInstance();
             builder.RegisterType<EfMailParameterDal>().As<IMailParameterDal>().SingleInstance();
 
+            builder.RegisterType<MailManager>().As<IMailService>().SingleInstance();
+            builder.RegisterType<EfMailDal>().As<IMailDal>().SingleInstance();
+
             builder.RegisterType<UserManager>().As<IUserService>().SingleInstance();
             builder.RegisterType<EfUserDal>().As<IUserDal>().SingleInstance();
 
