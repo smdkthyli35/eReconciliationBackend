@@ -40,7 +40,7 @@ namespace Business.Concrete
 
         public IDataResult<List<MailTemplate>> GetAll(int companyId)
         {
-            return new SuccessDataResult<List<MailTemplate>>(_mailTemplateDal.GetList());
+            return new SuccessDataResult<List<MailTemplate>>(_mailTemplateDal.GetList(m => m.CompanyId == companyId));
         }
 
         public IResult Update(MailTemplate mailTemplate)
