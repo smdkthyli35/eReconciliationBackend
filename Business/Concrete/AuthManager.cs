@@ -49,6 +49,11 @@ namespace Business.Concrete
             return new SuccessDataResult<AccessToken>(accessToken);
         }
 
+        public IDataResult<User> GetByMailConfirmValue(string value)
+        {
+            return new SuccessDataResult<User>(_userService.GetByMailConfirmValue(value));
+        }
+
         public IDataResult<User> Login(UserForLoginDto userForLoginDto)
         {
             var userToCheck = _userService.GetByMail(userForLoginDto.Email);
@@ -100,10 +105,10 @@ namespace Business.Concrete
 
             string subject = "Kullanıcı Kayıt Onay Maili";
             string body = "Kullanıcınız sisteme kayıt oldu. Kaydınızı tamamlamak için aşağıdaki linke tıklamanız gerekmektedir.";
-            string link = "https://localhost:7220";
+            string link = "https://localhost:44368/api/Auth/confirmuser?value=" + user.MailConfirmValue;
             string linkDescription = "Kayıt Onaylamak İçin Tıklayın";
 
-            var mailTemplate= _mailTemplateService.GetByTemplateName("Kayıt", 4);
+            var mailTemplate = _mailTemplateService.GetByTemplateName("Kayıt", 4);
             string templateBody = mailTemplate.Data.Value;
             templateBody = templateBody.Replace("{{title}}", subject);
             templateBody = templateBody.Replace("{{message}}", body);
@@ -142,6 +147,12 @@ namespace Business.Concrete
 
             _userService.Add(user);
             return new SuccessDataResult<User>(user, Messages.User.UserRegistered);
+        }
+
+        public IResult Update(User user)
+        {
+            _userService.Update(user);
+            return new SuccessResult(Messages.User.UserMailConfirmSuccessful);
         }
 
         public IResult UserExists(string email)

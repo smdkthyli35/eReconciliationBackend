@@ -21,6 +21,7 @@ namespace Business.Constants
             public static string SuccessfulLogin = "Başarıyla giriş yapıldı.";
             public static string UserRegistered = "Kullanıcı başarıyla oluşturuldu.";
             public static string UserAlreadyExists = "Bu kullanıcı zaten mevcut. Lütfen farklı bir kullanıcı giriniz.";
+            public static string UserMailConfirmSuccessful = "Mailiniz başarıyla onaylandı.";
         }
 
         public static class MailParameter
