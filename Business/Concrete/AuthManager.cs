@@ -49,6 +49,11 @@ namespace Business.Concrete
             return new SuccessDataResult<AccessToken>(accessToken);
         }
 
+        public IDataResult<User> GetById(int id)
+        {
+            return new SuccessDataResult<User>(_userService.GetById(id));
+        }
+
         public IDataResult<User> GetByMailConfirmValue(string value)
         {
             return new SuccessDataResult<User>(_userService.GetByMailConfirmValue(value));
@@ -103,6 +108,13 @@ namespace Business.Concrete
                 PasswordSalt = user.PasswordSalt
             };
 
+            SendConfirmEmail(user);
+
+            return new SuccessDataResult<UserCompanyDto>(userCompanyDto, Messages.User.UserRegistered);
+        }
+
+        void SendConfirmEmail(User user)
+        {
             string subject = "Kullanıcı Kayıt Onay Maili";
             string body = "Kullanıcınız sisteme kayıt oldu. Kaydınızı tamamlamak için aşağıdaki linke tıklamanız gerekmektedir.";
             string link = "https://localhost:44368/api/Auth/confirmuser?value=" + user.MailConfirmValue;
@@ -124,8 +136,6 @@ namespace Business.Concrete
                 Body = templateBody
             };
             _mailService.SendMail(sendMailDto);
-
-            return new SuccessDataResult<UserCompanyDto>(userCompanyDto, Messages.User.UserRegistered);
         }
 
         public IDataResult<User> RegisterSecondAccount(UserForRegisterDto userForRegisterDto, string password)
@@ -160,6 +170,12 @@ namespace Business.Concrete
             if (_userService.GetByMail(email) != null)
                 return new ErrorResult(Messages.User.UserAlreadyExists);
             return new SuccessResult();
+        }
+
+        IResult IAuthService.SendConfirmEmail(User user)
+        {
+            SendConfirmEmail(user);
+            return new SuccessResult(Messages.User.MailConfirmSendSuccessful);
         }
     }
 }
