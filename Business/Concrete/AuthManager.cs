@@ -141,7 +141,7 @@ namespace Business.Concrete
             _userService.Update(user);
         }
 
-        public IDataResult<User> RegisterSecondAccount(UserForRegisterDto userForRegisterDto, string password)
+        public IDataResult<User> RegisterSecondAccount(UserForRegisterDto userForRegisterDto, string password, int companyId)
         {
             byte[] passwordHash, passwordSalt;
             HashingHelper.CreatePasswordHash(password, out passwordHash, out passwordSalt);
@@ -159,6 +159,11 @@ namespace Business.Concrete
             };
 
             _userService.Add(user);
+
+            _companyService.UserCompanyAdd(user.Id, companyId);
+
+            SendConfirmEmail(user);
+
             return new SuccessDataResult<User>(user, Messages.User.UserRegistered);
         }
 
