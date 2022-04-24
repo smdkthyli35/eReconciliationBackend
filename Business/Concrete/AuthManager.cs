@@ -136,6 +136,9 @@ namespace Business.Concrete
                 Body = templateBody
             };
             _mailService.SendMail(sendMailDto);
+
+            user.MailConfirmDate = DateTime.Now;
+            _userService.Update(user);
         }
 
         public IDataResult<User> RegisterSecondAccount(UserForRegisterDto userForRegisterDto, string password)
@@ -174,6 +177,25 @@ namespace Business.Concrete
 
         IResult IAuthService.SendConfirmEmail(User user)
         {
+            if (user.MailConfirm == true)
+            {
+                return new ErrorResult(Messages.User.MailAlreadyConfirm);
+            }
+
+            DateTime confirmMailDate = user.MailConfirmDate;
+            DateTime now = DateTime.Now;
+            if (confirmMailDate.ToShortDateString() == now.ToShortDateString())
+            {
+                if (confirmMailDate.Hour == now.Hour && confirmMailDate.AddMinutes(5).Minute <= now.Minute)
+                {
+                    SendConfirmEmail(user);
+                    return new SuccessResult(Messages.User.MailConfirmSendSuccessful);
+                }
+                else
+                {
+                    return new ErrorResult(Messages.User.MailConfirmTimeHasNotExpired);
+                }
+            }
             SendConfirmEmail(user);
             return new SuccessResult(Messages.User.MailConfirmSendSuccessful);
         }
