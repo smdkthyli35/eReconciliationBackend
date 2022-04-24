@@ -30,6 +30,12 @@ namespace DataAccess.Concrete.EntityFramework
             BaseDbContext.SaveChanges();
         }
 
+        public UserCompany GetCompany(int userId)
+        {
+            var result = BaseDbContext.UserCompanies.Where(u => u.UserId == userId).FirstOrDefault();
+            return result;
+        }
+
         private BaseDbContext BaseDbContext => _context as BaseDbContext;
     }
 }

@@ -18,6 +18,7 @@ namespace Business.Abstract
         IDataResult<User> Login(UserForLoginDto userForLoginDto);
         IDataResult<User> GetByMailConfirmValue(string value);
         IDataResult<User> GetById(int id);
+        IDataResult<UserCompany> GetCompany(int userId);
         IResult UserExists(string email);
         IResult Update(User user);
         IResult CompanyExists(Company company);

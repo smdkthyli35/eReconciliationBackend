@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Entities.Dtos
 {
-    public class UserForRegisterToSecondAccountDto : IDto, UserForRegisterDto
+    public class UserForRegisterToSecondAccountDto : UserForRegisterDto, IDto
     {
         public int CompanyId { get; set; }
     }

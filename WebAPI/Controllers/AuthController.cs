@@ -68,12 +68,18 @@ namespace WebAPI.Controllers
             if (!userToLogin.Success)
                 return BadRequest(userToLogin.Message);
 
-            var result = _authService.CreateAccessToken(userToLogin.Data, 0);
+            if (userToLogin.Data.IsActive)
+            {
+                var userCompany = _authService.GetCompany(userToLogin.Data.Id).Data;
 
-            if (result.Success)
-                return Ok(result.Data);
+                var result = _authService.CreateAccessToken(userToLogin.Data, userCompany.CompanyId);
 
-            return BadRequest(result.Message);
+                if (result.Success)
+                    return Ok(result.Data);
+
+                return BadRequest(result.Message);
+            }
+            return BadRequest("Kullanıcı pasif durumda. Aktif etmek için yöneticinize danışın.");
         }
 
         [HttpGet("confirmuser")]
