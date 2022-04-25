@@ -15,6 +15,7 @@ using Entities.Concrete;
 using Business.ValidationRules.FluentValidation;
 using FluentValidation;
 using Core.CrossCuttingConcerns.Validation;
+using Core.Aspects.Autofac.Transaction;
 
 namespace Business.Concrete
 {
@@ -74,6 +75,7 @@ namespace Business.Concrete
             return new SuccessDataResult<User>(userToCheck, Messages.User.SuccessfulLogin);
         }
 
+        [TransactionScopeAspect]
         public IDataResult<UserCompanyDto> Register(UserForRegisterDto userForRegisterDto, string password, Company company)
         {
             byte[] passwordHash, passwordSalt;
