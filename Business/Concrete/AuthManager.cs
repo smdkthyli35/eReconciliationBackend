@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Entities.Concrete;
 using Business.ValidationRules.FluentValidation;
 using FluentValidation;
+using Core.CrossCuttingConcerns.Validation;
 
 namespace Business.Concrete
 {
@@ -90,19 +91,8 @@ namespace Business.Concrete
                 Name = userForRegisterDto.Name
             };
 
-            UserValidator userValidator = new();
-            var result = userValidator.Validate(user);
-            if (!result.IsValid)
-            {
-                throw new ValidationException(result.Errors);
-            }
-
-            CompanyValidator companyValidator = new();
-            var result2 = companyValidator.Validate(company);
-            if (!result2.IsValid)
-            {
-                throw new ValidationException(result2.Errors);
-            }
+            ValidationTool.Validate(new UserValidator(), user);
+            ValidationTool.Validate(new CompanyValidator(), company);
 
             _userService.Add(user);
 
