@@ -24,12 +24,8 @@ namespace Business.Concrete
 
         public IResult Add(Company company)
         {
-            if (company.Name.Length < 10)
-            {
-                _companyDal.Add(company);
-                return new SuccessResult(Messages.Company.AddedCompany);
-            }
-            return new ErrorResult("Şirket adı 10 karakterden küçük olamaz.");
+            _companyDal.Add(company);
+            return new SuccessResult(Messages.Company.AddedCompany);
         }
 
         public IResult CompanyExists(Company company)
