@@ -40,5 +40,12 @@ namespace Business.Constants
             public static string MailTemplateDeleted = "Mail şablonu başarıyla silindi.";
             public static string MailTemplateUpdated = "Mail şablonu başarıyla güncellendi.";
         }
+
+        public static class CurrencyAccount
+        {
+            public static string AddedCurrencyAccount = "Cari kaydı başarıyla eklendi.";
+            public static string DeletedCurrencyAccount = "Cari kaydı başarıyla silindi.";
+            public static string UpdatedCurrencyAccount = "Cari kaydı başarıyla güncellendi.";
+        }
     }
 }
