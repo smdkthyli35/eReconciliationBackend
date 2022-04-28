@@ -12,6 +12,7 @@ namespace Business.Constants
         {
             public static string AddedCompany = "Şirket kayıt işlemi başarıyla gerçekleştirildi.";
             public static string CompanyAlreadyExists = "Bu şirket zaten mevcut. Lütfen farklı bir şirket giriniz.";
+            public static string UpdatedCompany = "Şirket güncelleme işlemi başarıyla gerçekleştirildi.";
         }
 
         public static class User

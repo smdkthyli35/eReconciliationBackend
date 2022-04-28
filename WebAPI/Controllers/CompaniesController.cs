@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Entities.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -32,10 +33,43 @@ namespace WebAPI.Controllers
             return BadRequest(result.Success);
         }
 
-        [HttpPost("add")]
-        public IActionResult Add(Company company)
+        [HttpGet("getcompany")]
+        public IActionResult GetById(int id)
         {
-            var result = _companyService.Add(company);
+            var result = _companyService.GetById(id);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Success);
+        }
+
+        [HttpPost("add")]
+        public IActionResult Add(CompanyDto companyDto)
+        {
+            var result = _companyService.Add(companyDto.Company);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpPost("addcompanyandusercompany")]
+        public IActionResult AddCompanyAndUserCompany(CompanyDto companyDto)
+        {
+            var result = _companyService.AddCompanyAndUserCompany(companyDto);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpPost("update")]
+        public IActionResult Update(Company company)
+        {
+            var result = _companyService.Update(company);
             if (result.Success)
             {
                 return Ok(result);
