@@ -47,5 +47,12 @@ namespace Business.Constants
             public static string DeletedCurrencyAccount = "Cari kaydı başarıyla silindi.";
             public static string UpdatedCurrencyAccount = "Cari kaydı başarıyla güncellendi.";
         }
+
+        public static class AccountReconciliation
+        {
+            public static string AddedAccountReconciliation = "Cari mutabakat kaydı başarıyla eklendi.";
+            public static string DeletedAccountReconciliation = "Cari mutabakat kaydı başarıyla silindi.";
+            public static string UpdatedAccountReconciliation = "Cari mutabakat kaydı başarıyla güncellendi.";
+        }
     }
 }
