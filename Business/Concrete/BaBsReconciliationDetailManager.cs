@@ -61,6 +61,8 @@ namespace Business.Concrete
                 }
             }
 
+            File.Delete(filePath);
+
             return new SuccessResult(Messages.AccountReconciliation.AddedAccountReconciliation);
         }
 
