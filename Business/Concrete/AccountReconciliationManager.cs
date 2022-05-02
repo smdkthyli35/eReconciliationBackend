@@ -43,14 +43,15 @@ namespace Business.Concrete
                     while (reader.Read())
                     {
                         string code = reader.GetString(0);
-                        string startingDate = reader.GetString(1);
-                        string endingDate = reader.GetString(2);
-                        string currencyId = reader.GetString(3);
-                        string debit = reader.GetString(4);
-                        string credit = reader.GetString(5);
 
-                        if (code != "Cari Kodu")
+                        if (code != "Cari Kodu" && code != null)
                         {
+                            DateTime startingDate = reader.GetDateTime(1);
+                            DateTime endingDate = reader.GetDateTime(2);
+                            double currencyId = reader.GetDouble(3);
+                            double debit = reader.GetDouble(4);
+                            double credit = reader.GetDouble(5);
+
                             int currencyAccountId = _currencyAccountService.GetByCode(code, companyId).Data.Id;
 
                             AccountReconciliation accountReconciliation = new()
@@ -60,8 +61,8 @@ namespace Business.Concrete
                                 CurrencyCredit = Convert.ToDecimal(credit),
                                 CurrencyDebit = Convert.ToDecimal(debit),
                                 CurrencyId = Convert.ToInt16(currencyId),
-                                StartingDate = Convert.ToDateTime(startingDate),
-                                EndingDate = Convert.ToDateTime(endingDate)
+                                StartingDate = startingDate,
+                                EndingDate = endingDate
                             };
 
                             _accountReconciliationDal.Add(accountReconciliation);
@@ -70,7 +71,7 @@ namespace Business.Concrete
                 }
             }
 
-            return new SuccessResult(Messages.CurrencyAccount.AddedCurrencyAccount);
+            return new SuccessResult(Messages.AccountReconciliation.AddedAccountReconciliation);
         }
 
         public IResult Delete(AccountReconciliation accountReconciliation)
