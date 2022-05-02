@@ -80,9 +80,9 @@ namespace Business.Concrete
             return new SuccessResult(Messages.BaBsReconciliation.DeletedBaBsReconciliation);
         }
 
-        public IDataResult<List<BaBsReconciliation>> GetAll(int companyId)
+        public IDataResult<List<BaBsReconciliation>> GetAll(int baBsReconciliationId)
         {
-            return new SuccessDataResult<List<BaBsReconciliation>>(_baBsReconciliationDal.GetList(a => a.CompanyId == companyId));
+            return new SuccessDataResult<List<BaBsReconciliation>>(_baBsReconciliationDal.GetList(a => a.CompanyId == baBsReconciliationId));
         }
 
         public IDataResult<BaBsReconciliation> GetById(int id)

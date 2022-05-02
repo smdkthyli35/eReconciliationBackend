@@ -11,7 +11,7 @@ namespace Business.Abstract
     public interface IAccountReconciliationDetailService
     {
         IResult Add(AccountReconciliationDetail accountReconciliationDetail);
-        IResult AddToExcel(string filePath, int companyId);
+        IResult AddToExcel(string filePath, int accountReconciliationId);
         IResult Update(AccountReconciliationDetail accountReconciliationDetail);
         IResult Delete(AccountReconciliationDetail accountReconciliationDetail);
         IDataResult<AccountReconciliationDetail> GetById(int id);
