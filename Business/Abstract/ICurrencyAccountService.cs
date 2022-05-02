@@ -15,6 +15,7 @@ namespace Business.Abstract
         IResult Update(CurrencyAccount currencyAccount);
         IResult Delete(CurrencyAccount currencyAccount);
         IDataResult<CurrencyAccount> GetById(int id);
+        IDataResult<CurrencyAccount> GetByCode(string code, int companyId);
         IDataResult<List<CurrencyAccount>> GetAll(int companyId);
     }
 }
