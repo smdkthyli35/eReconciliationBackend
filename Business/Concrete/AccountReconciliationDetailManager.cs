@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Aspects.Autofac.Transaction;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
@@ -29,6 +30,7 @@ namespace Business.Concrete
             return new SuccessResult(Messages.AccountReconciliationDetail.AddedAccountReconciliationDetail);
         }
 
+        [TransactionScopeAspect]
         public IResult AddToExcel(string filePath, int accountReconciliationId)
         {
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
