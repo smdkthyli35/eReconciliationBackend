@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Transaction;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
@@ -26,12 +27,14 @@ namespace Business.Concrete
             _currencyAccountService = currencyAccountService;
         }
 
+        [CacheRemoveAspect("IAccountReconciliationService.Get")]
         public IResult Add(AccountReconciliation accountReconciliation)
         {
             _accountReconciliationDal.Add(accountReconciliation);
             return new SuccessResult(Messages.AccountReconciliation.AddedAccountReconciliation);
         }
 
+        [CacheRemoveAspect("IAccountReconciliationService.Get")]
         [TransactionScopeAspect]
         public IResult AddToExcel(string filePath, int companyId)
         {
@@ -76,12 +79,14 @@ namespace Business.Concrete
             return new SuccessResult(Messages.AccountReconciliation.AddedAccountReconciliation);
         }
 
+        [CacheRemoveAspect("IAccountReconciliationService.Get")]
         public IResult Delete(AccountReconciliation accountReconciliation)
         {
             _accountReconciliationDal.Delete(accountReconciliation);
             return new SuccessResult(Messages.AccountReconciliation.DeletedAccountReconciliation);
         }
 
+        [CacheAspect(60)]
         public IDataResult<List<AccountReconciliation>> GetAll(int companyId)
         {
             return new SuccessDataResult<List<AccountReconciliation>>(_accountReconciliationDal.GetList(a => a.CompanyId == companyId));
@@ -92,6 +97,7 @@ namespace Business.Concrete
             return new SuccessDataResult<AccountReconciliation>(_accountReconciliationDal.Get(a => a.Id == id));
         }
 
+        [CacheRemoveAspect("IAccountReconciliationService.Get")]
         public IResult Update(AccountReconciliation accountReconciliation)
         {
             _accountReconciliationDal.Update(accountReconciliation);
