@@ -92,6 +92,7 @@ namespace Business.Concrete
             return new SuccessDataResult<List<AccountReconciliation>>(_accountReconciliationDal.GetList(a => a.CompanyId == companyId));
         }
 
+        [CacheAspect(60)]
         public IDataResult<AccountReconciliation> GetById(int id)
         {
             return new SuccessDataResult<AccountReconciliation>(_accountReconciliationDal.Get(a => a.Id == id));

@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Business.Constants;
+using Core.Aspects.Autofac.Caching;
 using Core.Aspects.Autofac.Transaction;
 using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
@@ -24,12 +25,14 @@ namespace Business.Concrete
             _baBsReconciliationDetailDal = baBsReconciliationDetailDal;
         }
 
+        [CacheRemoveAspect("IBaBsReconciliationDetailService.Get")]
         public IResult Add(BaBsReconciliationDetail baBsReconciliationDetail)
         {
             _baBsReconciliationDetailDal.Add(baBsReconciliationDetail);
             return new SuccessResult(Messages.BaBsReconciliationDetail.AddedBaBsReconciliationDetail);
         }
 
+        [CacheRemoveAspect("IBaBsReconciliationDetailService.Get")]
         [TransactionScopeAspect]
         public IResult AddToExcel(string filePath, int baBsReconciliationId)
         {
@@ -66,22 +69,26 @@ namespace Business.Concrete
             return new SuccessResult(Messages.AccountReconciliation.AddedAccountReconciliation);
         }
 
+        [CacheRemoveAspect("IBaBsReconciliationDetailService.Get")]
         public IResult Delete(BaBsReconciliationDetail baBsReconciliationDetail)
         {
             _baBsReconciliationDetailDal.Delete(baBsReconciliationDetail);
             return new SuccessResult(Messages.BaBsReconciliationDetail.DeletedBaBsReconciliationDetail);
         }
 
+        [CacheAspect(60)]
         public IDataResult<List<BaBsReconciliationDetail>> GetAll(int baBsReconciliationId)
         {
             return new SuccessDataResult<List<BaBsReconciliationDetail>>(_baBsReconciliationDetailDal.GetList(a => a.BaBsReconciliationId == baBsReconciliationId));
         }
 
+        [CacheAspect(60)]
         public IDataResult<BaBsReconciliationDetail> GetById(int id)
         {
             return new SuccessDataResult<BaBsReconciliationDetail>(_baBsReconciliationDetailDal.Get(a => a.Id == id));
         }
 
+        [CacheRemoveAspect("IBaBsReconciliationDetailService.Get")]
         public IResult Update(BaBsReconciliationDetail baBsReconciliationDetail)
         {
             _baBsReconciliationDetailDal.Update(baBsReconciliationDetail);
