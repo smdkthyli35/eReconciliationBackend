@@ -2,6 +2,7 @@
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Performance;
 using Core.Aspects.Autofac.Transaction;
 using Core.Aspects.Autofac.Validation;
 using Core.Utilities.Results.Abstract;
@@ -14,6 +15,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Business.Concrete
@@ -27,10 +29,12 @@ namespace Business.Concrete
             _currencyAccountDal = currencyAccountDal;
         }
 
+        [PerformanceAspect(1)]
         [CacheRemoveAspect("ICurrencyAccountService.Get")]
         [ValidationAspect(typeof(CurrencyAccountValidator))]
         public IResult Add(CurrencyAccount currencyAccount)
         {
+            Thread.Sleep(2000);
             _currencyAccountDal.Add(currencyAccount);
             return new SuccessResult(Messages.CurrencyAccount.AddedCurrencyAccount);
         }
