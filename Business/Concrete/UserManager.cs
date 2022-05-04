@@ -1,6 +1,8 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
+using Core.Aspects.Autofac.Performance;
 using Core.Aspects.Autofac.Validation;
 using Core.Entities.Concrete;
 using DataAccess.Abstract;
@@ -51,6 +53,8 @@ namespace Business.Concrete
             return _userDal.GetClaims(user, companyId);
         }
 
+        [PerformanceAspect(3)]
+        [SecuredOperation("User.Update,Admin")]
         [CacheRemoveAspect("IUserService.Get")]
         public void Update(User user)
         {

@@ -1,4 +1,5 @@
 ﻿using Business.Abstract;
+using Business.BusinessAspects;
 using Business.Constants;
 using Business.ValidationRules.FluentValidation;
 using Core.Aspects.Autofac.Caching;
@@ -29,16 +30,18 @@ namespace Business.Concrete
             _currencyAccountDal = currencyAccountDal;
         }
 
-        [PerformanceAspect(1)]
+        [PerformanceAspect(3)]
+        [SecuredOperation("CurrencyAccount.Add,Admin")]
         [CacheRemoveAspect("ICurrencyAccountService.Get")]
         [ValidationAspect(typeof(CurrencyAccountValidator))]
         public IResult Add(CurrencyAccount currencyAccount)
         {
-            Thread.Sleep(2000);
             _currencyAccountDal.Add(currencyAccount);
             return new SuccessResult(Messages.CurrencyAccount.AddedCurrencyAccount);
         }
 
+        [PerformanceAspect(3)]
+        [SecuredOperation("CurrencyAccount.Add,Admin")]
         [CacheRemoveAspect("ICurrencyAccountService.Get")]
         [ValidationAspect(typeof(CurrencyAccountValidator))]
         [TransactionScopeAspect]
@@ -86,6 +89,8 @@ namespace Business.Concrete
             return new SuccessResult(Messages.CurrencyAccount.AddedCurrencyAccount);
         }
 
+        [PerformanceAspect(3)]
+        [SecuredOperation("CurrencyAccount.Delete,Admin")]
         [CacheRemoveAspect("ICurrencyAccountService.Get")]
         public IResult Delete(CurrencyAccount currencyAccount)
         {
@@ -93,24 +98,32 @@ namespace Business.Concrete
             return new SuccessResult(Messages.CurrencyAccount.DeletedCurrencyAccount);
         }
 
+        [PerformanceAspect(3)]
+        [SecuredOperation("CurrencyAccount.GetAll,Admin")]
         [CacheAspect(60)]
         public IDataResult<List<CurrencyAccount>> GetAll(int companyId)
         {
             return new SuccessDataResult<List<CurrencyAccount>>(_currencyAccountDal.GetList(c => c.CompanyId == companyId));
         }
 
+        [PerformanceAspect(3)]
+        [SecuredOperation("CurrencyAccount.Get,Admin")]
         [CacheAspect(60)]
         public IDataResult<CurrencyAccount> GetByCode(string code, int companyId)
         {
             return new SuccessDataResult<CurrencyAccount>(_currencyAccountDal.Get(c => c.Code == code && c.CompanyId == companyId));
         }
 
+        [PerformanceAspect(3)]
+        [SecuredOperation("CurrencyAccount.Get,Admin")]
         [CacheAspect(60)]
         public IDataResult<CurrencyAccount> GetById(int id)
         {
             return new SuccessDataResult<CurrencyAccount>(_currencyAccountDal.Get(c => c.Id == id));
         }
 
+        [PerformanceAspect(3)]
+        [SecuredOperation("CurrencyAccount.Update,Admin")]
         [CacheRemoveAspect("ICurrencyAccountService.Get")]
         [ValidationAspect(typeof(CurrencyAccountValidator))]
         public IResult Update(CurrencyAccount currencyAccount)
