@@ -36,7 +36,7 @@ namespace Business.Concrete
             return new SuccessResult(Messages.OperationClaim.DeletedOperationClaim);
         }
 
-        [SecuredOperation("Admin")]
+        [SecuredOperation("Admin,OperationClaim.GetAll")]
         public IDataResult<List<OperationClaim>> GetAll()
         {
             return new SuccessDataResult<List<OperationClaim>>(_operationClaimDal.GetList());
