@@ -8,6 +8,7 @@ using Core.Utilities.Results.Abstract;
 using Core.Utilities.Results.Concrete;
 using DataAccess.Abstract;
 using Entities.Concrete;
+using Entities.Dtos;
 using ExcelDataReader;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using SendMailDto = Entities.Dtos.SendMailDto;
 
 namespace Business.Concrete
 {
@@ -22,11 +24,16 @@ namespace Business.Concrete
     {
         private readonly IAccountReconciliationDal _accountReconciliationDal;
         private readonly ICurrencyAccountService _currencyAccountService;
+        private readonly IMailService _mailService;
+        private readonly IMailTemplateService _mailTemplateService;
+        private readonly IMailParameterService _mailParameterService;
 
-        public AccountReconciliationManager(IAccountReconciliationDal accountReconciliationDal, ICurrencyAccountService currencyAccountService)
+        public AccountReconciliationManager(IAccountReconciliationDal accountReconciliationDal, ICurrencyAccountService currencyAccountService, IMailService mailService, IMailTemplateService mailTemplateService)
         {
             _accountReconciliationDal = accountReconciliationDal;
             _currencyAccountService = currencyAccountService;
+            _mailService = mailService;
+            _mailTemplateService = mailTemplateService;
         }
 
         [PerformanceAspect(3)]
@@ -34,6 +41,8 @@ namespace Business.Concrete
         [CacheRemoveAspect("IAccountReconciliationService.Get")]
         public IResult Add(AccountReconciliation accountReconciliation)
         {
+            string guid = Guid.NewGuid().ToString();
+            accountReconciliation.Guid = guid;
             _accountReconciliationDal.Add(accountReconciliation);
             return new SuccessResult(Messages.AccountReconciliation.AddedAccountReconciliation);
         }
@@ -63,6 +72,8 @@ namespace Business.Concrete
 
                             int currencyAccountId = _currencyAccountService.GetByCode(code, companyId).Data.Id;
 
+                            string guid = Guid.NewGuid().ToString();
+
                             AccountReconciliation accountReconciliation = new()
                             {
                                 CompanyId = companyId,
@@ -71,7 +82,8 @@ namespace Business.Concrete
                                 CurrencyDebit = Convert.ToDecimal(debit),
                                 CurrencyId = Convert.ToInt16(currencyId),
                                 StartingDate = startingDate,
-                                EndingDate = endingDate
+                                EndingDate = endingDate,
+                                Guid = guid
                             };
 
                             _accountReconciliationDal.Add(accountReconciliation);
@@ -103,11 +115,62 @@ namespace Business.Concrete
         }
 
         [PerformanceAspect(3)]
+        [SecuredOperation("AccountReconciliation.GetAll,Admin")]
+        [CacheAspect(60)]
+        public IDataResult<List<AccountReconciliationDto>> GetAllDto(int companyId)
+        {
+            return new SuccessDataResult<List<AccountReconciliationDto>>(_accountReconciliationDal.GetAllDto(companyId));
+        }
+
+        [PerformanceAspect(3)]
+        public IDataResult<AccountReconciliation> GetByCode(string code)
+        {
+            return new SuccessDataResult<AccountReconciliation>(_accountReconciliationDal.Get(a => a.Guid == code));
+        }
+
+        [PerformanceAspect(3)]
         [SecuredOperation("AccountReconciliation.Get,Admin")]
         [CacheAspect(60)]
         public IDataResult<AccountReconciliation> GetById(int id)
         {
             return new SuccessDataResult<AccountReconciliation>(_accountReconciliationDal.Get(a => a.Id == id));
+        }
+
+        [PerformanceAspect(3)]
+        [SecuredOperation("AccountReconciliation.SendMail,Admin")]
+        public IResult SendReconciliationMail(AccountReconciliationDto accountReconciliationDto)
+        {
+            string subject = "Mutabakat Maili";
+            string body = $"Şirket Adımız : {accountReconciliationDto.CompanyName} <br />" +
+                          $"Şirket Vergi Dairesi : {accountReconciliationDto.CompanyTaxDepartment} <br />" +
+                          $"Şirket Vergi Numarası : {accountReconciliationDto.CompanyTaxIdNumber} - {accountReconciliationDto.CompanyIdentityNumber} <br /><hr>" +
+                          $"Sizin Şirket: {accountReconciliationDto.AccountName} <br />" +
+                          $"Sizin Şirket Vergi Dairesi : {accountReconciliationDto.AccountTaxDepartment} <br />" +
+                          $"Sizin Şirket Vergi Numarası : {accountReconciliationDto.AccountTaxIdNumber} - {accountReconciliationDto.AccountIdentityNumber} <br /><hr>" +
+                          $"Borç : {accountReconciliationDto.CurrencyDebit}{accountReconciliationDto.CurrencyCode} <br />" +
+                          $"Alacak : {accountReconciliationDto.CurrencyCredit}{accountReconciliationDto.CurrencyCode} <br />";
+
+            string link = "https://localhost:44368/api/AccountReconciliations/GetByCode?code=" + accountReconciliationDto.Guid;
+            string linkDescription = "Mutabakatı Cevaplamak İçin Tıklayın";
+
+            var mailTemplate = _mailTemplateService.GetByTemplateName("Kayıt", 4);
+            string templateBody = mailTemplate.Data.Value;
+            templateBody = templateBody.Replace("{{title}}", subject);
+            templateBody = templateBody.Replace("{{message}}", body);
+            templateBody = templateBody.Replace("{{link}}", link);
+            templateBody = templateBody.Replace("{{linkDescription}}", linkDescription);
+
+            var mailParameter = _mailParameterService.Get(4);
+            SendMailDto sendMailDto = new()
+            {
+                MailParameter = mailParameter.Data,
+                Email = accountReconciliationDto.AccountEmail,
+                Subject = "Kullanıcı kayıt onay maili",
+                Body = templateBody
+            };
+            _mailService.SendMail(sendMailDto);
+
+            return new SuccessResult(Messages.Mail.MailSendSuccessful);
         }
 
         [PerformanceAspect(3)]

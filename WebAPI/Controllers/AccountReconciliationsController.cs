@@ -1,5 +1,6 @@
 ﻿using Business.Abstract;
 using Entities.Concrete;
+using Entities.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -24,7 +25,7 @@ namespace WebAPI.Controllers
         [HttpGet("getall")]
         public IActionResult GetAll(int companyId)
         {
-            var result = _accountReconciliationService.GetAll(companyId);
+            var result = _accountReconciliationService.GetAllDto(companyId);
             if (result.Success)
             {
                 return Ok(result);
@@ -92,6 +93,17 @@ namespace WebAPI.Controllers
         public IActionResult Delete(AccountReconciliation accountReconciliation)
         {
             var result = _accountReconciliationService.Delete(accountReconciliation);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Message);
+        }
+
+        [HttpPost("sendreconciliationmail")]
+        public IActionResult SendReconciliationMail(AccountReconciliationDto accountReconciliationDto)
+        {
+            var result = _accountReconciliationService.SendReconciliationMail(accountReconciliationDto);
             if (result.Success)
             {
                 return Ok(result);
